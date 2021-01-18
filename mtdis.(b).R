@@ -1,4 +1,3 @@
-#library(parallel)
 library(mnormt)
 library(MASS)
 library(mvtnorm)
@@ -679,12 +678,8 @@ for(j in 1:12){
   }
   cp[j]<-m[j]/rep
 }
-cp
-
-
+cp<-round(cp,3)
 par<-c("beta0","beta1","sigma","D11","D12","D22","lambda1","lambda2","gamma1","gamma2","alpha1","alpha2")
-
-
 
 table<-data.frame(par,theta,Est,Bias,R.Bias,SE,rmse,cp)
 table
