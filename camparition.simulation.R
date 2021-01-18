@@ -9,8 +9,6 @@ library(JM)
 library(splines)
 library(grid)
 
-
-
 rep<-200
 
 RESULTS=matrix(0,rep,12)
@@ -71,16 +69,12 @@ colnames(RESULTS)=c("beta0","beta1","sigma","D11","D12","D22","lambda1","lambda2
 }
 
     }                                                                                                                      
-    
    
-    #############
-    
-    
+    ############
     # print(Time.p)
     # the censoring mechanism is induced by an exponential process with parameter 0.25
     censor.Time<-rexp(n,0.25)
     #  print(censor.Time)
-    
     
     Time.n<-rep(0,n)
     death.n<-rep(0,n)
@@ -106,9 +100,7 @@ colnames(RESULTS)=c("beta0","beta1","sigma","D11","D12","D22","lambda1","lambda2
     for (i in 1:n) { 
       if (abs(Time.n[i]-floor(Time.n[i]))<0.5) {a<-2*floor(Time.n[i])}
       else {a <- 2*floor(Time.n[i])+1}
-      b  <- b+a }
-    
-    
+      b  <- b+a 
     #print(b)
     
     # create variable obstime
@@ -184,17 +176,14 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     
     lgLik<-rep(numeric(),iters) 
     
-    
     X1<-rep(1,n)
     X2<-data2$Time
-    
     
     Z.time<-matrix(c(X1,X2),ncol=2)
     
     Ztime.b<- rep(0,n) 
     for (i in 1:n) {Ztime.b[i]<- Z.time[i,] %*% t(b[i,])}
-    
-    
+   
     group<-data2$group  
     
     cur.lgLik<- -10000  
@@ -206,7 +195,6 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     
     for (t in 1:iters)  {
       
-      
       log.hazard<-delta*log(lambda) + delta*( gamma*group+ alpha*(beta0 + beta1*data2$Time+Ztime.b))
       # print(log.hazard)
       
@@ -214,21 +202,15 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
       for (i in 1:n) {
         a1<-(lambda/(alpha*(beta1+b[i,2])))*exp(gamma*group[i]+alpha*(beta0+b[i,1]))
         a2<- 1- exp(alpha*(beta1+b[i,2])*data2$Time[i])
-        
-        
-        log.survival[i]<-a1*a2    }
-      
+        log.survival[i]<-a1*a2  
+      }
       
       log.p.tb<-log.hazard+log.survival 
-      
       
       #print(log.p.yt)
       lgLik[t]<-loglik.yb+sum(log.p.tb)
       
       # print(lgLik[t])
-      
-      
-      
       
       if (lgLik[t] > cur.lgLik) {  { EM.lambda<-lambda} &{ cur.lgLik<-lgLik[t]  } }
       else  {  {cur.lgLik <-cur.lgLik} &{break} } 
@@ -243,12 +225,10 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
         b1<-alpha*(beta1+b[i,2])    
         c1<- 1- exp(b1*data2$Time[i])   
         
-        
-        
+  
         {S1.lambda[i]<-(delta[i]/lambda)+(a1/b1)*c1} &
-        {S2.lambda[i]<- (-delta[i])/(lambda^2)} }
-      
-      
+        {S2.lambda[i]<- (-delta[i])/(lambda^2)} 
+      }
       
       Sum.S1.lambda<-sum(S1.lambda,na.rm=TRUE)
       Sum.S2.lambda<-sum(S2.lambda,na.rm=TRUE)
@@ -280,28 +260,21 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     #  data2<-subset(data1,obstime==0)
     # number of subjects in the sample
     n<-length(data2$patient)
-    
-    
-    lgLik<-rep(numeric(),iters) 
-    
-    
+        
+    lgLik<-rep(numeric(),iters)
     
     X1<-rep(1,n)
     X2<-data2$Time
-    
-    
+        
     Z.time<-matrix(c(X1,X2),ncol=2)
     
     Ztime.b<- rep(0,n) 
     for (i in 1:n) {Ztime.b[i]<- Z.time[i,] %*% t(b[i,])}
     
-    
     group<-data2$group  
-    
-    
+        
     cur.lgLik<- -100000  
-    
-    
+        
     EM.lambda<-lambda  
     EM.gamma<-gamma
     EM.alpha<-alpha
@@ -317,9 +290,7 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
         a1<-(lambda/(alpha*(beta1+b[i,2])))*exp(gamma*group[i]+alpha*(beta0+b[i,1]))
         a2<- 1- exp(alpha*(beta1+b[i,2])*data2$Time[i])
         
-        
         log.survival[i]<-a1*a2 }
-      
       
       log.p.tb<-log.hazard+log.survival 
       
@@ -327,16 +298,13 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
       lgLik[t]<-loglik.yb+sum(log.p.tb)
       
       # print(lgLik[t])
-      
-      
-      
-      
+       
+            
       if (lgLik[t] > cur.lgLik) {  { EM.gamma<-gamma} &{ cur.lgLik<-lgLik[t]  } }
       else  {  {cur.lgLik <-cur.lgLik} &{break} } 
       #    if (t==2) {break}
       # update new parameter values
-      
-      
+            
       S1.gamma<-rep(0,n)
       S2.gamma<-rep(0,n)
       
@@ -344,15 +312,11 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
         a1<-lambda*exp(gamma*group[i]+alpha*(beta0+b[i,1]))      
         b1<-alpha*(beta1+b[i,2])        
         c1<- 1- exp(b1*data2$Time[i])
-        
-        
-        
+                       
         {S1.gamma[i]<-delta[i]*group[i]+(a1/b1)*c1*group[i]} &
         {S2.gamma[i]<-(a1/b1)*c1*(group[i]^2)}}
       
-      
-      
-      Sum.S1.gamma<-sum(S1.gamma,na.rm=TRUE)
+       Sum.S1.gamma<-sum(S1.gamma,na.rm=TRUE)
       Sum.S2.gamma<-sum(S2.gamma,na.rm=TRUE)
       
       ngamma<- gamma-Sum.S1.gamma/Sum.S2.gamma
@@ -391,17 +355,14 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     
     #iters<-10
     lgLik<-rep(numeric(),iters) 
-    
-    
+        
     X1<-rep(1,n)
     X2<-data2$Time
-    
     
     Z.time<-matrix(c(X1,X2),ncol=2)
     
     Ztime.b<- rep(0,n) 
     for (i in 1:n) {Ztime.b[i]<- Z.time[i,] %*% t(b[i,])}
-    
     
     group<-data2$group  
     
@@ -410,12 +371,10 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     EM.lambda<-lambda  
     EM.gamma<-gamma
     EM.alpha<-alpha
-    
-    
+        
     
     for (t in 1:iters)  {
-      
-     
+           
       log.hazard<-delta*log(lambda) + delta*( gamma*group+ alpha*(beta0 + beta1*data2$Time+Ztime.b))
       # print(log.hazard)
       
@@ -430,15 +389,13 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
       
       
       log.p.tb<-log.hazard+log.survival 
-      
-      
+          
       
       #print(log.p.yt)
       lgLik[t]<-loglik.yb+sum(log.p.tb)
       
       # print(lgLik[t])
-      
-      
+            
       if (lgLik[t] > cur.lgLik) {  { EM.alpha<-alpha} &{ cur.lgLik<-lgLik[t]  } }
       else  {  {cur.lgLik <-cur.lgLik} &{break}  } 
       #  if (t==2) {break}
@@ -542,8 +499,8 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     
     log.survival<-rep(0,n)
     for (i in 1:n) {
-      a1<-(his.lambda[1]/(his.alpha[1]*(beta1+b[i,2])))*exp(his.gamma[1]*group[i]+his.alpha[1]*(beta0+b[i,1]))
-      a2<- 1- exp(his.alpha[1]*(beta1+b[i,2])*data2$Time[i])
+      a1<-(f.lambda[1]/(f.alpha[1]*(beta1+b[i,2])))*exp(f.gamma[1]*group[i]+f.alpha[1]*(beta0+b[i,1]))
+      a2<- 1- exp(f.alpha[1]*(beta1+b[i,2])*data2$Time[i])
       
       
       log.survival[i]<-a1*a2
@@ -591,7 +548,7 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
       
       epsilon<-10^(-8)
       
-      if ( abs(lgLik3 -his.lgLik[i]) < epsilon*(abs(his.lgLik[i])+epsilon)) {break}
+      if ( abs(lgLik3 -f.lgLik[i]) < epsilon*(abs(f.lgLik[i])+epsilon)) {break}
      
       f.lgLik[i+1]<-lgLik3   
       
@@ -718,10 +675,6 @@ coxFit <- coxph(Surv(Time, status2) ~ group*CR + strata(CR),
   }
 
 
-
-
-
-
  #################Rizopolouse(2012) Joint model
 
 
@@ -771,13 +724,9 @@ jointFit$coef$alpha[1]+jointFit$coef$alpha[2])
 print(kkk)
 }
 
-
-
-
 #JOINT2 <- JOINT [which(rowSums(JOINT) != 0), ]
 
-################
- Calculate Estimate, Bias, R.bias, RMSE and CP for Two-stage, Separate and Rizopoulos joint model
+################Calculate Estimate, Bias, R.bias, RMSE and CP for Two-stage, Separate and Rizopoulos joint model
 
 
 res<-matrix(0,rep,12)
@@ -836,11 +785,9 @@ for(j in 1:12){
   }
   cp[j]<-m[j]/rep
 }
-cp
-
+cp<-round(cp,3)
 
 par<-c("beta0","beta1","sigma","D11","D12","D22","lambda1","lambda2","gamma1","gamma2","alpha1","alpha2")
-
 
 table<-data.frame(par,theta,Est,Bias,R.Bias,SE,rmse,cp)
 table
