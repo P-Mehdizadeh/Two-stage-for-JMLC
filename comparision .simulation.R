@@ -9,8 +9,6 @@ library(JM)
 library(splines)
 library(grid)
 
-
-
 rep<-200
 
 RESULTS=matrix(0,rep,12)
@@ -281,10 +279,7 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     # number of subjects in the sample
     n<-length(data2$patient)
     
-    
     lgLik<-rep(numeric(),iters) 
-    
-    
     
     X1<-rep(1,n)
     X2<-data2$Time
@@ -297,17 +292,14 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     
     
     group<-data2$group  
-    
-    
+        
     cur.lgLik<- -100000  
-    
-    
+        
     EM.lambda<-lambda  
     EM.gamma<-gamma
     EM.alpha<-alpha
     
-    
-    for (t in 1:iters)  {
+        for (t in 1:iters)  {
       
       log.hazard<-delta*log(lambda) + delta*( gamma*group+ alpha*(beta0 + beta1*data2$Time+Ztime.b))
       # print(log.hazard)
@@ -328,9 +320,7 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
       
       # print(lgLik[t])
       
-      
-      
-      
+            
       if (lgLik[t] > cur.lgLik) {  { EM.gamma<-gamma} &{ cur.lgLik<-lgLik[t]  } }
       else  {  {cur.lgLik <-cur.lgLik} &{break} } 
       #    if (t==2) {break}
@@ -391,17 +381,14 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     
     #iters<-10
     lgLik<-rep(numeric(),iters) 
-    
-    
+        
     X1<-rep(1,n)
     X2<-data2$Time
-    
-    
+        
     Z.time<-matrix(c(X1,X2),ncol=2)
     
     Ztime.b<- rep(0,n) 
     for (i in 1:n) {Ztime.b[i]<- Z.time[i,] %*% t(b[i,])}
-    
     
     group<-data2$group  
     
@@ -411,11 +398,9 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
     EM.gamma<-gamma
     EM.alpha<-alpha
     
-    
-    
+        
     for (t in 1:iters)  {
-      
-     
+           
       log.hazard<-delta*log(lambda) + delta*( gamma*group+ alpha*(beta0 + beta1*data2$Time+Ztime.b))
       # print(log.hazard)
       
@@ -427,11 +412,9 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
         
         log.survival[i]<-a1*a2
       }
-      
-      
+            
       log.p.tb<-log.hazard+log.survival 
-      
-      
+            
       
       #print(log.p.yt)
       lgLik[t]<-loglik.yb+sum(log.p.tb)
@@ -465,18 +448,15 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
         {S1.alpha[i]<-delta[i]*e1+grad(f1,alpha)} &
         {S2.alpha[i]<-hessian(f1,alpha)}                    }
       
-      
-      
+            
       Sum.S1.alpha<-sum(S1.alpha,na.rm=TRUE)
       Sum.S2.alpha<-sum(S2.alpha,na.rm=TRUE)
       
       nalpha<- alpha-Sum.S1.alpha/Sum.S2.alpha
       
       #print(nalpha)
-      
-      
-      
-      
+          
+            
       alpha<-nalpha
       
     }
@@ -494,7 +474,6 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
 ########################################### function of update parameters  
 
   update.parameter<-function(beta0,beta1,lambda,gamma,alpha,b,loglik.yb,delta,data1,data2,iters){
-    #update.parameter(0.5,1,1.5,1,1,0.05,0.1,0.1,0.01,1,3,3,3,3,2,10)
     
     f.lambda<-rep(0,iters+1)
     
@@ -580,10 +559,7 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
       
       lgLik3<-re3[4]
       
-      
-      
-      
-      
+     
       f.lambda[i+1]<-lambda
       
       f.gamma[i+1]<-gamma
@@ -594,8 +570,7 @@ data1<-simulation.JMLC.model(500,5,2,0.2,0.4,1,0.5,0.1,0.08,2,1,0.5,1)
       if ( abs(lgLik3 -f.lgLik[i]) < epsilon*(abs(f.lgLik[i])+epsilon)) {break}
      
       f.lgLik[i+1]<-lgLik3   
-      
-      
+
     }
     
     #print(f.lambda)  
@@ -633,7 +608,7 @@ rate[i]<-b[i,10]
 
 
 ################Estimate Parameters based on Two-Stage approach for JMLC and Separtae model
-
+#############longitudinal process
 sample<-result
 for(kkk in 1:rep){
    data1=sample[[kkk]]
@@ -679,7 +654,7 @@ coxFit <- coxph(Surv(Time, status2) ~ group*CR + strata(CR),
     if(data2$cause[i]==2){delta2[i]=1} else {delta2[i]=0}
 
   } 
- #################### time-to-event process
+ #################### competing risks process
   ##############cause 1
   
   
@@ -719,11 +694,7 @@ coxFit <- coxph(Surv(Time, status2) ~ group*CR + strata(CR),
 
 
 
-
-
-
  #################Rizopolouse(2012) Joint model
-
 
 for(kkk in 1:rep){
    data1=sample[[kkk]]
@@ -770,8 +741,6 @@ jointFit$coef$gammas[1]+jointFit$coef$gammas[2],jointFit$coef$alpha[1],
 jointFit$coef$alpha[1]+jointFit$coef$alpha[2])
 print(kkk)
 }
-
-
 
 
 #JOINT2 <- JOINT [which(rowSums(JOINT) != 0), ]
